@@ -22,7 +22,7 @@ class Transactions extends Component {
                 name: res.data.name,
                 balance: res.data.accountBalance,
                 quantity: 0,
-                history: res.data.history
+                transactions: res.data.transactions
             });
             
         })
@@ -33,15 +33,16 @@ class Transactions extends Component {
     render() {
         var arr = [];
         const { user } = this.props.auth;
-        if(this.state.history){
+        if(this.state.transactions){
           //  console.log(this.state.transactions["0"])
-          for(let i in (this.state.history)){
-            console.log(this.state.history[i]);
-              arr.push(this.state.history[i]);
+          for(let i in (this.state.transactions)){
+            console.log(this.state.transactions[i]);
+              arr.push(this.state.transactions[i]);
           }
         }
+        let i = 0;
         const listItems = arr.map((num) =>
-        <li key={num}>{("BUY (" + num['symbol'] + ') - ' + num['shares'] + " Shares @ $" + num['cost'])}</li>
+        <li key={i++}>{("BUY (" + num['symbol'] + ') - ' + num['shares'] + " Shares @ $" + num['cost'] + " Each")}</li>
         );
         return (
             <div>

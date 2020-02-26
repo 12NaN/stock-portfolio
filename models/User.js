@@ -29,7 +29,8 @@ const UserSchema = new Schema({
     type: Array
   },
   cash:{
-    type: Number
+    type: Number,
+    default: 0
   }
 });
 module.exports = User = mongoose.model("users", UserSchema);

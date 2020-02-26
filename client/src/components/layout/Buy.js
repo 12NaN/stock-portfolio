@@ -28,7 +28,6 @@ class Buy extends Component {
                 balance: res.data.accountBalance,
                 quantity: 0,
                 transactions: res.data.transactions,
-                history: res.data.history,
                 cash: res.data.cash
             });
             
@@ -49,45 +48,27 @@ class Buy extends Component {
         axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${this.state.symbol}&apikey=T5CMC85GIANZVEPW`)
         .then(res => {
          console.log(res);
+         console.log(this.state.symbol);
 //         console.log((this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)));
          if((this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)).toFixed(2) < 0){
              alert("You don't have enough money to buy these shares.");
          }
          else{
-            var arr = [], hist = [];
-            hist = this.state.history;
-            arr = (this.state.transactions);
-            let j = false;
             let cash = this.state.cash;
-            for(let i in arr){
-                console.log(arr[i]);
-                console.log(this.state.symbol)
-                if(arr[i]['symbol'] == this.state.symbol){
-                    console.log(arr[i]['shares'])
-                    arr[i]['shares'] = parseInt(arr[i]['shares']) + parseInt(this.state.quantity);
-                    console.log(arr[i]['shares'])
-                    arr[i]['cost'] = parseInt(arr[i]['cost']) + parseInt((res.data["Global Quote"]["05. price"] * this.state.quantity).toFixed(2));
-                    console.log(arr[i]['cost'])
-                    cash = cash + parseInt((res.data["Global Quote"]["05. price"] * this.state.quantity).toFixed(2));
-                    j = true;
-                }
-                console.log(arr[i]);
-            }
-            if(j == false)
-                arr.push({key: arr.length, symbol: this.state.symbol, shares: this.state.quantity, cost: res.data["Global Quote"]["05. price"], open: res.data["Global Quote"]["02. open"], curr_price: res.data["Global Quote"]["05. price"] });
-            hist.push({key: hist.length, symbol: this.state.symbol, shares: this.state.quantity, cost: res.data["Global Quote"]["05. price"], open: res.data["Global Quote"]["02. open"]});
+            var arr = [];
+            arr = (this.state.transactions);
+            console.log(arr);
+            arr.push({symbol: this.state.symbol, shares: this.state.quantity, cost: res.data["Global Quote"]["05. price"]});
+            cash = cash + (res.data["Global Quote"]["05. price"] * this.state.quantity);
             this.setState({balance: (this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)).toFixed(2),
-                transactions: {symbol: this.state.symbol, shares: this.state.quantity, cost: res.data["Global Quote"]["05. price"]},
-                history: hist, cash: cash
+                transactions: arr, cash: cash
             })
             
             axios.put('http://localhost:5000/api/users/update', {
                 id: this.state.id,
                 name: this.state.name,
                 accountBalance: this.state.balance,
-                transactions: arr,
-                history: this.state.history,
-                cash: this.state.cash
+                transactions: this.state.transactions
             })
             .then(res =>{
                 console.log(res);
@@ -99,10 +80,12 @@ class Buy extends Component {
             console.log("post");
          }
         })
-        .catch(error => alert("That symbol doesn't exist."));
+        .catch(error => alert(error));
     }
     render() {
         var arr = [];
+        var cash = 0;
+        const { user } = this.props.auth;
         if(this.state.transactions){
           //  console.log(this.state.transactions["0"])
           for(let i in (this.state.transactions)){
@@ -111,9 +94,8 @@ class Buy extends Component {
           }
         }
         var i =0;
-        console.log(arr);
-        const listItems = arr.map((num) =>        
-            <li key={num} style={{color: parseInt(num['open']) > parseInt(num['curr_price']) ? "red" : parseInt(num['open']) < parseInt(num['curr_price']) ? "green" : "grey"}}>{(num['symbol'] + '-' + num['shares'] + " Shares   $" + num['cost'])}</li>  
+        const listItems = arr.map((num) =>      
+            <li key={i++} style={{color: parseInt(num['open']) > parseInt(num['curr_price']) ? "red" : parseInt(num['open']) < parseInt(num['curr_price']) ? "green" : "grey"}}>{(num['symbol'] + '-' + num['shares'] + " Shares   $" + num['cost'])}</li>  
        );
         return (
             <div>
