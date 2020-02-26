@@ -26,8 +26,8 @@ router.post("/register", (req, res) => {
         const newUser = new User({
           name: req.body.name,
           email: req.body.email,
-          password: req.body.password,
-          accountBalance: 5000
+          password: req.body.password
+    //      accountBalance: 5000
         });
   // Hash password before saving in database
         bcrypt.genSalt(10, (err, salt) => {
@@ -110,7 +110,9 @@ router.post("/login", (req, res) => {
       $set:{
         name: req.body.name,
         accountBalance: req.body.accountBalance,
-        transactions: req.body.transactions
+        transactions: req.body.transactions,
+        history: req.body.history,
+        cash: req.body.cash
       }
     }, (err, result) => {
       if(err) {

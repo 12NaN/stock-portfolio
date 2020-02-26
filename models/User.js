@@ -20,10 +20,16 @@ const UserSchema = new Schema({
   },
   accountBalance: {
     type: Number,
-   // default: 5000
+    default: 5000
   },
   transactions: {
     type: Array
+  },
+  history: {
+    type: Array
+  },
+  cash:{
+    type: Number
   }
 });
 module.exports = User = mongoose.model("users", UserSchema);

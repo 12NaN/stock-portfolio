@@ -9,35 +9,40 @@ class Transactions extends Component {
         super(props);
         const { user } = this.props.auth;
         this.state = {symbol: "", balance : user.accountBalance, quantity: 0};
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.onChangeQuantity = this.onChangeQuantity.bind(this);
-        this.onChangeSymbol = this.onChangeSymbol.bind(this);
     }
-    
-    onChangeSymbol(e) {
-        this.setState({symbol: e.target.value});
-    }
-    onChangeQuantity(e) {
-        this.setState({quantity: e.target.value});
-    }
-    
-    
-    handleSubmit() {
-        axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${this.state.symbol}&apikey=T5CMC85GIANZVEPW`)
+    componentDidMount(){
+        const { user } = this.props.auth;
+
+        axios.get('http://localhost:5000/api/users/user/'+user.id)
         .then(res => {
-         console.log(res);
-         console.log((this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)));
-         if((this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)).toFixed(2) < 0){
-             alert("You don't have enough money to buy these shares.");
-         }
-         else{
-            console.log(this.state.quantity);
-            this.setState({balance: (this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)).toFixed(2)})
-         }
+            console.log(res);
+            this.setState({
+                symbol : "",
+                id: res.data._id,
+                name: res.data.name,
+                balance: res.data.accountBalance,
+                quantity: 0,
+                history: res.data.history
+            });
+            
         })
-        .catch(error => alert("That symbol doesn't exist."))
+        .catch((error) =>{
+            console.log(error)
+        });
     }
     render() {
+        var arr = [];
+        const { user } = this.props.auth;
+        if(this.state.history){
+          //  console.log(this.state.transactions["0"])
+          for(let i in (this.state.history)){
+            console.log(this.state.history[i]);
+              arr.push(this.state.history[i]);
+          }
+        }
+        const listItems = arr.map((num) =>
+        <li key={num}>{("BUY (" + num['symbol'] + ') - ' + num['shares'] + " Shares @ $" + num['cost'])}</li>
+        );
         return (
             <div>
                 <Link to="/dashboard" className="btn-flat waves-effect">
@@ -45,29 +50,13 @@ class Transactions extends Component {
                     Dashboard
                 </Link>
                 <br></br>
-                <Link to="/transactions" className="btn-flat waves-effect">
-                    <i className="material-icons left">keyboard_backspace</i> View Transactions
+                <Link to="/buy" className="btn-flat waves-effect">
+                    <i className="material-icons left">keyboard_backspace</i> Buy Stock
                 </Link>
-                <h4 style={{textAlign: "center"}}>Portfolio</h4>
-                <h4>Current Balance: ${this.state.balance.toFixed(2)} </h4>
-                <h6>Symbol: </h6>
-                <input type="text" name="Symbol" default="BABA" onChange={this.onChangeSymbol}></input>
-                <br></br>
-                <br></br>
-                <h6>Quantity: </h6>
-                <input type="number" name="Quantity" min="1" default="1" onChange={this.onChangeQuantity}></input>
-                <button
-                style={{
-                    width: "150px",
-                    borderRadius: "3px",
-                    letterSpacing: "1.5px",
-                    marginTop: "1rem"
-                }}
-                onClick={this.handleSubmit}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                >
-                Buy
-                </button>
+                <h4 style={{textAlign: "center"}}>Transactions</h4>
+                <div style={{textAlign: "center"}}>
+                    <ul><u>{listItems}</u></ul>
+                </div>
             </div>
         );
     }
