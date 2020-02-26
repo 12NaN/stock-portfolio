@@ -1,12 +1,9 @@
 import React, { Component } from "react";
-import Buy from '../layout/Buy';
-import Transactions from '../layout/Transactions';
 import axios from 'axios';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import {Link } from "react-router-dom";
-import Button from '@material-ui/core/Button';
 
 class Dashboard extends Component {
   constructor(props){
@@ -14,12 +11,11 @@ class Dashboard extends Component {
     this.state ={};
   }
   componentDidMount(){
-    const { user } = this.props.auth;
+    const { user } = this.props.auth; // Get user data
 
-    axios.get('http://localhost:5000/api/users/user/'+user.id)
+    axios.get('http://localhost:5000/api/users/user/'+user.id) // Retrieve user data from db based on user id
     .then(res => {
-        console.log(res);
-        this.setState({
+        this.setState({ // Setting state based on user's data
             symbol : "",
             id: res.data._id,
             name: res.data.name,
@@ -33,7 +29,7 @@ class Dashboard extends Component {
         console.log(error)
     });
 }
-  onLogoutClick = e => {
+  onLogoutClick = e => { // Logout when the logout button is clicked
     e.preventDefault();
     this.props.logoutUser();
   };
@@ -43,7 +39,7 @@ return (
         <div className="row">
           <div className="col s12 center-align">
             <h4>
-              <b>Hey there,</b> {this.state.name}{/*{user.name.split(" ")[0]}*/}
+              <b>Hey there,</b> {this.state.name}
               <p className="flow-text grey-text text-darken-1">
                 You're account balance is ${this.state.balance}
               </p>
@@ -59,8 +55,7 @@ return (
               className="btn btn-large waves-effect waves-light hoverable blue accent-3"
             >
               Buy Stock
-{       /*       <Link to="/buy" component={Buy} balance ={this.state.balance}>Buy Stock</Link>*/
-}            </Link>
+            </Link>
             <br></br>
 
             <Link

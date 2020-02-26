@@ -95,7 +95,7 @@ router.post("/login", (req, res) => {
       });
     });
   });
-  router.get("/user/:id", (req, res) => {
+  router.get("/user/:id", (req, res) => { // get user data based on their id
     let id = req.params.id
     User.findById(id, (error, data) =>{
       if(error)
@@ -104,8 +104,7 @@ router.post("/login", (req, res) => {
         res.json(data)
     })
   });
-  router.put("/update", (req, res) => {
-    console.log("Updatettttt");
+  router.put("/update", (req, res) => { // update user data
     User.findByIdAndUpdate(req.body.id, {
       $set:{
         name: req.body.name,
@@ -122,30 +121,4 @@ router.post("/login", (req, res) => {
         res.send(result)
     });
   });
-    /*
-    console.log("req.body", req.body);
-    // inserting a new inventory
-    
-    var _id = req.body._id;
-    var inventory = {
-      name: req.body.name,
-      accountBalance: req.body.accountBalance,
-      transactions: req.body.transactions
-    };
-  
-    User.findByIdAndUpdate(_id, inventory, { new: true }, function(
-      err,
-      inventory
-    ) {
-      if (err) {
-        console.log("err", err);
-        res.status(500).send(err);
-      } else {
-        console.log("success");
-        res.send(inventory);
-      }
-    });
-    
-  });
-  */
   module.exports = router;

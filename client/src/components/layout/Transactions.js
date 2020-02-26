@@ -11,12 +11,11 @@ class Transactions extends Component {
         this.state = {symbol: "", balance : user.accountBalance, quantity: 0};
     }
     componentDidMount(){
-        const { user } = this.props.auth;
+        const { user } = this.props.auth; // Get user data
 
-        axios.get('http://localhost:5000/api/users/user/'+user.id)
+        axios.get('http://localhost:5000/api/users/user/'+user.id) // Get user data from database based on their user id
         .then(res => {
-            console.log(res);
-            this.setState({
+            this.setState({ // Set state based on user data.
                 symbol : "",
                 id: res.data._id,
                 name: res.data.name,
@@ -32,15 +31,13 @@ class Transactions extends Component {
     }
     render() {
         var arr = [];
-        const { user } = this.props.auth;
-        if(this.state.transactions){
-          //  console.log(this.state.transactions["0"])
+        if(this.state.transactions){ // Iterate through transactions and push them to arr
           for(let i in (this.state.transactions)){
-            console.log(this.state.transactions[i]);
-              arr.push(this.state.transactions[i]);
+            arr.push(this.state.transactions[i]);
           }
         }
         let i = 0;
+        // Iterate through arr and list data to users.
         const listItems = arr.map((num) =>
         <li key={i++}>{("BUY (" + num['symbol'] + ') - ' + num['shares'] + " Shares @ $" + num['cost'] + " Each")}</li>
         );
