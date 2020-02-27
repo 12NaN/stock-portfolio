@@ -55,7 +55,7 @@ class Buy extends Component {
             console.log(arr);
             arr.push({symbol: this.state.symbol, shares: this.state.quantity, cost: res.data["Global Quote"]["05. price"]}); // Update arr
             cash = cash + (res.data["Global Quote"]["05. price"] * this.state.quantity); // Update cash
-            cash = cash.toFixed(2);
+            cash = cash;
             // Change state based on balance change, new transactions and amount of cash
             this.setState({balance: (this.state.balance - (res.data["Global Quote"]["05. price"] * this.state.quantity)).toFixed(2),
                 transactions: arr, cash: cash
