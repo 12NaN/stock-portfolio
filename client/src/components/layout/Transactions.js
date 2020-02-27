@@ -13,7 +13,7 @@ class Transactions extends Component {
     componentDidMount(){
         const { user } = this.props.auth; // Get user data
 
-        axios.get('http://localhost:5000/api/users/user/'+user.id) // Get user data from database based on their user id
+        axios.get('https://my-stock-portfolio-ttp.herokuapp.com/api/users/user/'+user.id) // Get user data from database based on their user id
         .then(res => {
             this.setState({ // Set state based on user data.
                 symbol : "",

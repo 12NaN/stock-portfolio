@@ -17,7 +17,7 @@ class Buy extends Component {
     componentDidMount(){
         const { user } = this.props.auth; // Get user data
 
-        axios.get('http://localhost:5000/api/users/user/'+user.id) // Get user data from database based on their user id
+        axios.get('https://my-stock-portfolio-ttp.herokuapp.com/api/users/user/'+user.id) // Get user data from database based on their user id
         .then(res => {
             this.setState({ // Set state based on user data.
                 symbol : "",
@@ -62,7 +62,7 @@ class Buy extends Component {
             })
             
             // Send the updated data to the database
-            axios.put('http://localhost:5000/api/users/update', {
+            axios.put('https://my-stock-portfolio-ttp.herokuapp.com/api/users/update', {
                 id: this.state.id,
                 name: this.state.name,
                 accountBalance: this.state.balance,
