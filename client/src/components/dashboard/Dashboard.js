@@ -12,8 +12,8 @@ class Dashboard extends Component {
   }
   componentDidMount(){
     const { user } = this.props.auth; // Get user data
-
-    axios.get('http://localhost:5000/api/users/user/'+user.id) // Retrieve user data from db based on user id
+    //axios.get('http://localhost:5000/api/users/user/'+user.id) 
+    axios.get('https://my-stock-portfolio-ttp.herokuapp.com/api/users/user/'+user.id) // Retrieve user data from db based on user id
     .then(res => {
         this.setState({ // Setting state based on user's data
             symbol : "",
